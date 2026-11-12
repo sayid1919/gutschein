@@ -1,5 +1,6 @@
 import { ButtonLink } from "@/components/button-link";
 import { Gem } from "@/components/gem";
+import { GemStage } from "@/components/gem-stage";
 import { Reveal } from "@/components/reveal";
 import { site } from "@/lib/site";
 
@@ -53,12 +54,15 @@ export function Hero() {
           </Reveal>
         </div>
 
-        <Reveal delay={0.2} offset={0} className="relative mx-auto w-full max-w-[19rem] sm:max-w-sm lg:max-w-[30rem]">
+        <Reveal delay={0.2} offset={0} className="relative mx-auto w-full max-w-[21rem] sm:max-w-md lg:max-w-[34rem]">
           <div
             aria-hidden="true"
-            className="absolute inset-[-18%] animate-glow-breathe rounded-full bg-[radial-gradient(closest-side,rgb(111_210_122/0.38),transparent)] blur-2xl"
+            className="absolute inset-[4%] animate-glow-breathe rounded-full bg-[radial-gradient(closest-side,rgb(111_210_122/0.32),transparent)] blur-2xl"
           />
-          <Gem className="relative w-full drop-shadow-[0_30px_60px_rgb(0_0_0/0.6)]" />
+          <GemStage fallback={<Gem animated={false} className="size-full" />} />
+          <p className="mt-2 text-center text-[0.6875rem] uppercase tracking-[0.28em] text-mist">
+            Drag to turn the stone
+          </p>
         </Reveal>
       </div>
 

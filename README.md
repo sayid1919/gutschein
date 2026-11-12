@@ -26,5 +26,6 @@ Set `NEXT_PUBLIC_SITE_URL` to the public origin of the deployed site (see `.env.
 ## Structure
 
 - `src/lib/site.ts` — all page copy, navigation and collection data
-- `src/components` — page sections and shared UI (`Gem` and `CollectionGlyph` are procedural SVG artwork)
+- `src/components` — page sections and shared UI. `GemStage` / `GemScene` render the interactive 3D demantoid (three.js via React Three Fiber); `Gem` is its static SVG fallback
+- `src/assets/photos` — photography, registered in `src/lib/photos.ts`. The current files are AI-generated stand-ins: replace each file with a real photograph of the same name to swap it
 - `src/app` — layout, metadata, sitemap, robots and the Open Graph image

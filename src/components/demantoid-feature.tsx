@@ -1,18 +1,29 @@
+import Image from "next/image";
 import { ButtonLink } from "@/components/button-link";
-import { Gem } from "@/components/gem";
 import { Reveal } from "@/components/reveal";
+import { demantoidFeaturePhoto } from "@/lib/photos";
 
 export function DemantoidFeature() {
   return (
     <section id="demantoid" aria-labelledby="demantoid-title" className="pb-24 sm:pb-32">
       <div className="container-page">
-        <div className="relative isolate overflow-hidden border border-line bg-[radial-gradient(48rem_30rem_at_85%_50%,rgb(18_64_43),transparent_72%)] bg-ink-soft px-7 py-16 sm:px-14 sm:py-24 lg:px-20">
-          <Gem
-            animated={false}
-            className="pointer-events-none absolute -right-28 top-1/2 -z-10 w-80 -translate-y-1/2 opacity-30 sm:-right-20 sm:w-[26rem] sm:opacity-45 lg:right-10 lg:w-[30rem] lg:opacity-90"
-          />
+        <div className="grid overflow-hidden border border-line bg-ink-soft lg:grid-cols-2">
+          <div className="relative min-h-[20rem] sm:min-h-[26rem] lg:order-last lg:min-h-[36rem]">
+            <Image
+              src={demantoidFeaturePhoto.src}
+              alt={demantoidFeaturePhoto.alt}
+              fill
+              placeholder="blur"
+              sizes="(min-width: 1024px) 600px, 100vw"
+              className="object-cover"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-t from-ink-soft via-transparent to-transparent lg:bg-gradient-to-r"
+            />
+          </div>
 
-          <div className="max-w-xl">
+          <div className="flex flex-col justify-center px-7 py-14 sm:px-14 sm:py-20 lg:px-16">
             <Reveal>
               <p className="eyebrow">Signature Collection</p>
               <h2
@@ -23,7 +34,7 @@ export function DemantoidFeature() {
               </h2>
             </Reveal>
             <Reveal delay={0.12}>
-              <p className="mt-7 text-lg leading-relaxed text-ivory/85">
+              <p className="mt-7 max-w-md text-lg leading-relaxed text-ivory/85">
                 Experience the extraordinary green brilliance of one of nature&rsquo;s most
                 fascinating garnets.
               </p>
