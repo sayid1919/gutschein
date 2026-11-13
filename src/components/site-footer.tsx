@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { navigation, site } from "@/lib/site";
 
 export function SiteFooter() {
@@ -14,12 +15,12 @@ export function SiteFooter() {
           <ul className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             {navigation.map((item) => (
               <li key={item.href}>
-                <a
+                <Link
                   href={item.href}
                   className="inline-block py-2 text-xs font-normal uppercase tracking-[0.22em] text-mist transition-colors duration-300 hover:text-ivory"
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

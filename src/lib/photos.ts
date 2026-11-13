@@ -1,6 +1,5 @@
 import type { StaticImageData } from "next/image";
 import demantoidCollection from "@/assets/photos/demantoid-collection.jpg";
-import demantoidFeature from "@/assets/photos/demantoid-feature.jpg";
 import faceted from "@/assets/photos/faceted-gemstones.jpg";
 import rare from "@/assets/photos/rare-gemstones.jpg";
 import rough from "@/assets/photos/rough-gemstones.jpg";
@@ -31,9 +30,4 @@ export const collectionPhotos: Partial<Record<string, Photo>> = {
     src: rare,
     alt: "Three rare gemstones resting in an open gem parcel paper",
   },
-};
-
-export const demantoidFeaturePhoto: Photo = {
-  src: demantoidFeature,
-  alt: "Round brilliant-cut demantoid garnet showing green brilliance and fire",
 };

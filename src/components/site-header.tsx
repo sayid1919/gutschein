@@ -2,7 +2,9 @@
 
 import { AnimatePresence } from "framer-motion";
 import * as m from "framer-motion/m";
+import Link from "next/link";
 import { useEffect, useId, useState } from "react";
+import { CartLink } from "@/components/cart-link";
 import { navigation, site } from "@/lib/site";
 
 export function SiteHeader() {
@@ -48,9 +50,9 @@ export function SiteHeader() {
       }`}
     >
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
-        <a
-          href="#top"
-          aria-label={`${site.name} — back to top`}
+        <Link
+          href="/"
+          aria-label={`${site.name} — home`}
           className="flex items-baseline gap-2.5"
           onClick={() => setOpen(false)}
         >
@@ -60,20 +62,23 @@ export function SiteHeader() {
           <span className="text-[0.625rem] font-normal uppercase tracking-[0.34em] text-gold">
             {site.descriptor}
           </span>
-        </a>
+        </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-9">
             {navigation.map((item) => (
               <li key={item.href}>
-                <a
+                <Link
                   href={item.href}
                   className="relative py-2 text-xs font-normal uppercase tracking-[0.22em] text-mist transition-colors duration-300 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-gold after:transition-transform after:duration-500 after:ease-luxe hover:text-ivory hover:after:scale-x-100"
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
+            <li>
+              <CartLink className="py-2 text-xs font-normal uppercase tracking-[0.22em] text-mist transition-colors duration-300 hover:text-ivory" />
+            </li>
           </ul>
         </nav>
 
@@ -120,15 +125,21 @@ export function SiteHeader() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.06 * index, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <a
+                  <Link
                     href={item.href}
                     className="block py-5 font-display text-3xl text-ivory"
                     onClick={() => setOpen(false)}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </m.li>
               ))}
+              <li className="border-b border-line">
+                <CartLink
+                  className="block py-5 font-display text-3xl text-ivory"
+                  onNavigate={() => setOpen(false)}
+                />
+              </li>
             </ul>
             <p className="container-page eyebrow pb-10">{site.locality}</p>
           </m.nav>

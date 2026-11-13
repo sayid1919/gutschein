@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 interface ButtonLinkProps {
@@ -24,7 +25,7 @@ export function ButtonLink({
   className = "",
 }: ButtonLinkProps) {
   return (
-    <a href={href} className={`${base} ${variants[variant]} ${className}`}>
+    <Link href={href} className={`${base} ${variants[variant]} ${className}`}>
       {children}
       {arrow ? (
         <span
@@ -34,6 +35,6 @@ export function ButtonLink({
           →
         </span>
       ) : null}
-    </a>
+    </Link>
   );
 }

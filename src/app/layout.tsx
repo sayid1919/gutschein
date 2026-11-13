@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import type { ReactNode } from "react";
+import { CartProvider } from "@/components/cart-provider";
 import { MotionProvider } from "@/components/motion-provider";
 import { site, siteUrl } from "@/lib/site";
 import "./globals.css";
@@ -71,7 +72,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         >
           Skip to content
         </a>
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <CartProvider>{children}</CartProvider>
+        </MotionProvider>
       </body>
     </html>
   );

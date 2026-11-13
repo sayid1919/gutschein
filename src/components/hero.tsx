@@ -47,8 +47,8 @@ export function Hero() {
           </Reveal>
 
           <Reveal delay={0.36} className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <ButtonLink href="#collections">Our Collections</ButtonLink>
-            <ButtonLink href="#demantoid" variant="outline" arrow>
+            <ButtonLink href="/shop">Visit the Shop</ButtonLink>
+            <ButtonLink href="/shop/demantoid-garnet" variant="outline" arrow>
               Explore Demantoid
             </ButtonLink>
           </Reveal>

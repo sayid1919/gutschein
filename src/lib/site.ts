@@ -16,10 +16,10 @@ export const site = {
 } as const;
 
 export const navigation = [
-  { label: "Collections", href: "#collections" },
-  { label: "Philosophy", href: "#philosophy" },
-  { label: "Our Promise", href: "#promise" },
-  { label: "Demantoid", href: "#demantoid" },
+  { label: "Shop", href: "/shop" },
+  { label: "Collections", href: "/#collections" },
+  { label: "Philosophy", href: "/#philosophy" },
+  { label: "Our Promise", href: "/#promise" },
 ] as const;
 
 export type GlyphKind = "brilliant" | "rough" | "step" | "trillion" | "ring";
@@ -29,6 +29,8 @@ export interface Collection {
   name: string;
   summary: string;
   glyph: GlyphKind;
+  /** Where the collection card leads in the shop. */
+  href: string;
   featured?: boolean;
 }
 
@@ -39,6 +41,7 @@ export const collections: readonly Collection[] = [
     summary:
       "Our signature collection. Exceptional rough and faceted stones with extraordinary green brilliance.",
     glyph: "brilliant",
+    href: "/shop/demantoid-garnet",
     featured: true,
   },
   {
@@ -46,24 +49,28 @@ export const collections: readonly Collection[] = [
     name: "Rough Gemstones",
     summary: "Natural crystals, presented just as the earth shaped them.",
     glyph: "rough",
+    href: "/shop",
   },
   {
     id: "faceted-gemstones",
     name: "Faceted Gemstones",
     summary: "Cut stones chosen for their colour, clarity and light.",
     glyph: "step",
+    href: "/shop",
   },
   {
     id: "rare-gemstones",
     name: "Rare Gemstones",
     summary: "Remarkable precious and semi-precious stones, seldom seen.",
     glyph: "trillion",
+    href: "/shop/other-gemstones",
   },
   {
     id: "fine-jewelry",
     name: "Fine Jewelry",
     summary: "Selected pieces that let an exceptional stone take the lead.",
     glyph: "ring",
+    href: "/shop/fine-jewelry",
   },
 ];
 

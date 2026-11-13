@@ -1,7 +1,6 @@
-import Image from "next/image";
 import { ButtonLink } from "@/components/button-link";
 import { Reveal } from "@/components/reveal";
-import { demantoidFeaturePhoto } from "@/lib/photos";
+import { LoopVideo } from "@/components/loop-video";
 
 export function DemantoidFeature() {
   return (
@@ -9,17 +8,18 @@ export function DemantoidFeature() {
       <div className="container-page">
         <div className="grid overflow-hidden border border-line bg-ink-soft lg:grid-cols-2">
           <div className="relative min-h-[20rem] sm:min-h-[26rem] lg:order-last lg:min-h-[36rem]">
-            <Image
-              src={demantoidFeaturePhoto.src}
-              alt={demantoidFeaturePhoto.alt}
-              fill
-              placeholder="blur"
-              sizes="(min-width: 1024px) 600px, 100vw"
-              className="object-cover"
+            <LoopVideo
+              className="absolute inset-0 size-full object-cover"
+              poster="/media/demantoid-parcel-poster.jpg"
+              label="A row of round faceted demantoid garnets in a stone tray"
+              sources={[
+                { src: "/media/demantoid-parcel.webm", type: "video/webm" },
+                { src: "/media/demantoid-parcel.mp4", type: "video/mp4" },
+              ]}
             />
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-t from-ink-soft via-transparent to-transparent lg:bg-gradient-to-r"
+              className="absolute inset-0 bg-gradient-to-t from-ink-soft/80 via-transparent to-transparent lg:bg-gradient-to-r lg:from-ink-soft/70"
             />
           </div>
 
@@ -40,7 +40,7 @@ export function DemantoidFeature() {
               </p>
             </Reveal>
             <Reveal delay={0.2} className="mt-10">
-              <ButtonLink href="#demantoid-garnet" arrow className="w-full sm:w-auto">
+              <ButtonLink href="/shop/demantoid-garnet" arrow className="w-full sm:w-auto">
                 Explore Demantoid
               </ButtonLink>
             </Reveal>

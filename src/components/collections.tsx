@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { CollectionGlyph } from "@/components/collection-glyph";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
@@ -65,7 +66,9 @@ export function Collections() {
                         featured ? "text-4xl sm:text-5xl" : "text-3xl"
                       }`}
                     >
-                      {collection.name}
+                      <Link href={collection.href} className="after:absolute after:inset-0">
+                        {collection.name}
+                      </Link>
                     </h3>
                     <p className="mt-3 max-w-md leading-relaxed text-ivory/80">{collection.summary}</p>
                   </div>

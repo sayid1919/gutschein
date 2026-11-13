@@ -36,7 +36,7 @@ const structuredData = {
         "@type": "ListItem",
         position: index + 1,
         name: collection.name,
-        url: `${siteUrl}/#${collection.id}`,
+        url: `${siteUrl}${collection.href}`,
       })),
     },
   ],
