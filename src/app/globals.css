@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-cormorant), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-ink: #060a08;
+  --color-ink-soft: #0b130f;
+  --color-surface: #0f1914;
+  --color-line: rgb(255 255 255 / 0.09);
+  --color-ivory: #f4f0e6;
+  --color-mist: #a8b3ab;
+  --color-gold: #cbab6c;
+  --color-gold-soft: #e3cb97;
+  --color-demantoid: #6fd27a;
+  --color-forest: #12402b;
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-gem-turn: gem-turn 140s linear infinite;
+  --animate-facet-glint: facet-glint 5.5s ease-in-out infinite;
+  --animate-glow-breathe: glow-breathe 9s ease-in-out infinite;
+
+  @keyframes gem-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes facet-glint {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes glow-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.06);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgb(111 210 122 / 0.3);
+    color: var(--color-ivory);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-soft);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 3rem;
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+@utility hairline {
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgb(203 171 108 / 0.45) 20%,
+    rgb(203 171 108 / 0.45) 80%,
+    transparent
+  );
+}
+
+/* Static gem artwork gives way to the 3D stones once <GemJourney> is running. */
+.gem-fallback {
+  transition: opacity 1s var(--ease-luxe);
+}
+
+:root[data-gems] [data-gem-slot] .gem-fallback,
+:root[data-gems="flying"] [data-gem-stage] .gem-fallback {
+  opacity: 0;
+}

@@ -1,0 +1,41 @@
+# Virelia Gemhouse
+
+Landing page for Virelia Gemhouse — rare gems, Swiss standards.
+
+Built with Next.js 15 (App Router), TypeScript, Tailwind CSS v4 and Framer Motion.
+
+## Development
+
+```bash
+npm install
+npm run dev
+```
+
+## Checks
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
+
+## Configuration
+
+Set `NEXT_PUBLIC_SITE_URL` to the public origin of the deployed site (see `.env.example`). It is used for canonical URLs, the sitemap, social previews and the product images shown on Stripe's checkout page.
+
+## Shop
+
+- **Inventory** lives in `src/lib/products.ts`; the file explains how to set a price, mark a piece sold and list a new one. Photos and videos go in `public/products/<slug>/`.
+- **Prices** are written in Swiss francs (`price: 1250` is CHF 1,250.00). A piece without a price shows "Price on request" and cannot be bought.
+- **Categories, currency (CHF) and shipping countries** are set in `src/lib/shop.ts`.
+- **Payments** use Stripe Checkout. Set `STRIPE_SECRET_KEY` to switch them on; without it the shop works as a catalogue and checkout reports that online payment is off.
+- Prices are always read from the server's catalogue, never from the browser.
+- Every stone is unique. After a sale, set `sold: true` on its entry and redeploy; nothing marks it sold automatically.
+
+## Structure
+
+- `src/lib/site.ts` — all page copy, navigation and collection data
+- `src/components` — page sections and shared UI. `GemJourney` draws the 3D gemstones (three.js via React Three Fiber) that float in the hero and fly into the `GemSlots` section on scroll; `Gem` and `CollectionGlyph` are their static fallbacks
+- `src/assets/photos` — photography, registered in `src/lib/photos.ts`. Only `rough-gemstones.jpg` is still an AI-generated stand-in; the rest are the house's own photographs. Replace a file with another of the same name to swap it
+- `stock` — original photos and videos of inventory as supplied, kept for building product listings (not served by the site)
+- `src/app` — layout, metadata, sitemap, robots and the Open Graph image
