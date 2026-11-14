@@ -35,5 +35,6 @@ Set `NEXT_PUBLIC_SITE_URL` to the public origin of the deployed site (see `.env.
 
 - `src/lib/site.ts` — all page copy, navigation and collection data
 - `src/components` — page sections and shared UI. `GemStage` / `GemScene` render the interactive 3D demantoid (three.js via React Three Fiber); `Gem` is its static SVG fallback
-- `src/assets/photos` — photography, registered in `src/lib/photos.ts`. The current files are AI-generated stand-ins: replace each file with a real photograph of the same name to swap it
+- `src/assets/photos` — photography, registered in `src/lib/photos.ts`. Only `rough-gemstones.jpg` is still an AI-generated stand-in; the rest are the house's own photographs. Replace a file with another of the same name to swap it
+- `stock` — original photos and videos of inventory as supplied, kept for building product listings (not served by the site)
 - `src/app` — layout, metadata, sitemap, robots and the Open Graph image

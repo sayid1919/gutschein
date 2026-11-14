@@ -16,7 +16,7 @@ export interface Photo {
 export const collectionPhotos: Partial<Record<string, Photo>> = {
   "demantoid-garnet": {
     src: demantoidCollection,
-    alt: "Faceted demantoid garnets in several cuts beside a rough crystal, on dark slate",
+    alt: "A group of round faceted demantoid garnets",
   },
   "rough-gemstones": {
     src: rough,
@@ -24,10 +24,10 @@ export const collectionPhotos: Partial<Record<string, Photo>> = {
   },
   "faceted-gemstones": {
     src: faceted,
-    alt: "Loose faceted gemstones in a range of colours and cuts",
+    alt: "Blue square step-cut gemstone held in tweezers",
   },
   "rare-gemstones": {
     src: rare,
-    alt: "Three rare gemstones resting in an open gem parcel paper",
+    alt: "Three bi-colour emerald-cut gemstones in a stone tray",
   },
 };
