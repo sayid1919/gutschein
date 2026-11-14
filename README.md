@@ -35,7 +35,7 @@ Set `NEXT_PUBLIC_SITE_URL` to the public origin of the deployed site (see `.env.
 ## Structure
 
 - `src/lib/site.ts` — all page copy, navigation and collection data
-- `src/components` — page sections and shared UI. `GemJourney` draws the 3D gemstones (three.js via React Three Fiber) that float in the hero and fly into the `GemSlots` section on scroll; `Gem` and `CollectionGlyph` are their static fallbacks
+- `src/components` — page sections and shared UI. `GemShowcase` holds the stones section: `GemJourney` draws the 3D gemstones (three.js via React Three Fiber) that float in the hero and fly into their slots on scroll, and `GemDialog` shows a stone's details when it is clicked. The stones themselves are listed in `src/lib/showcase.ts`; `Gem` and `CollectionGlyph` are the static fallbacks
 - `src/assets/photos` — photography, registered in `src/lib/photos.ts`. Only `rough-gemstones.jpg` is still an AI-generated stand-in; the rest are the house's own photographs. Replace a file with another of the same name to swap it
 - `stock` — original photos and videos of inventory as supplied, kept for building product listings (not served by the site)
 - `src/app` — layout, metadata, sitemap, robots and the Open Graph image

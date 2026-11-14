@@ -89,64 +89,111 @@ export function createBrilliantGeometry(elongation = 1): BufferGeometry {
   return geometry;
 }
 
-/**
- * Step cut (emerald or square): an eight-sided outline with clipped corners, and facets
- * arranged in parallel tiers on both the crown and the pavilion.
- *
- * @param halfWidth Half the width of the outline (x axis).
- * @param halfLength Half the length of the outline (z axis).
- * @param corner How much of each corner is clipped, in the same units.
- */
-export function createStepCutGeometry(halfWidth: number, halfLength: number, corner: number): BufferGeometry {
-  const { triangle, quad, build } = createFacetBuilder(new Vector3(0, -0.2, 0));
+export type Outline = readonly (readonly [number, number])[];
 
-  /** One tier: the outline scaled towards the centre, at height `y`. */
-  const tier = (scale: number, y: number): Vector3[] => {
-    const w = halfWidth * scale;
-    const l = halfLength * scale;
-    const c = corner * scale;
-    return [
-      new Vector3(w - c, y, l),
-      new Vector3(w, y, l - c),
-      new Vector3(w, y, -l + c),
-      new Vector3(w - c, y, -l),
-      new Vector3(-w + c, y, -l),
-      new Vector3(-w, y, -l + c),
-      new Vector3(-w, y, l - c),
-      new Vector3(-w + c, y, l),
-    ];
-  };
+/** Eight-sided outline of an emerald or square cut: a rectangle with clipped corners. */
+export function clippedRectangle(halfWidth: number, halfLength: number, corner: number): Outline {
+  const w = halfWidth;
+  const l = halfLength;
+  const c = corner;
+  return [
+    [w - c, l],
+    [w, l - c],
+    [w, -l + c],
+    [w - c, -l],
+    [-w + c, -l],
+    [-w, -l + c],
+    [-w, l - c],
+    [-w + c, l],
+  ];
+}
+
+/** Heart outline, point downwards (towards +z), fitted to a radius of about 1. */
+export function heartOutline(points = 32): Outline {
+  return Array.from({ length: points }, (_, i) => {
+    const t = (i / points) * Math.PI * 2;
+    const x = 16 * Math.sin(t) ** 3;
+    const z = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+    return [x / 17, (z - 2.5) / 17] as const;
+  });
+}
+
+/** Marquise (navette) outline: two arcs meeting in a point at each end. */
+export function marquiseOutline(halfWidth = 0.52, points = 28): Outline {
+  return Array.from({ length: points }, (_, i) => {
+    const t = (i / points) * Math.PI * 2;
+    const side = Math.cos(t);
+    return [Math.sign(side) * halfWidth * Math.abs(side) ** 1.5, Math.sin(t)] as const;
+  });
+}
+
+/** Elongated hexagon with a point at each side, every edge split once so the facets are finer. */
+export function hexagonOutline(): Outline {
+  const corners: Outline = [
+    [1, 0],
+    [0.52, 0.62],
+    [-0.52, 0.62],
+    [-1, 0],
+    [-0.52, -0.62],
+    [0.52, -0.62],
+  ];
+  return corners.flatMap((corner, i) => {
+    const next = corners[(i + 1) % corners.length] ?? corner;
+    return [corner, [(corner[0] + next[0]) / 2, (corner[1] + next[1]) / 2] as const];
+  });
+}
+
+/** Shield (kite) outline: narrow at the top, widest at the shoulders, tapering to the bottom. */
+export const SHIELD_OUTLINE: Outline = [
+  [0.14, -1],
+  [0.54, -0.46],
+  [0.1, 1],
+  [-0.1, 1],
+  [-0.54, -0.46],
+  [-0.14, -1],
+];
+
+const ringOf = (outline: Outline, scale: number, y: number, centreZ = 0): Vector3[] =>
+  outline.map(([x, z]) => new Vector3(x * scale, y, centreZ + (z - centreZ) * scale));
+
+/**
+ * Step cut: facets arranged in parallel tiers on both the crown and the pavilion.
+ * The outline must be convex.
+ */
+export function createStepCutGeometry(outline: Outline): BufferGeometry {
+  const { triangle, quad, build } = createFacetBuilder(new Vector3(0, -0.2, 0));
+  const count = outline.length;
 
   const tiers = [
-    tier(0.62, 0.3), // table edge
-    tier(0.8, 0.2),
-    tier(0.93, 0.1),
-    tier(1, 0.018), // girdle, upper edge
-    tier(1, -0.018), // girdle, lower edge
-    tier(0.76, -0.3),
-    tier(0.46, -0.56),
-    tier(0.12, -0.76), // culet
+    ringOf(outline, 0.62, 0.3), // table edge
+    ringOf(outline, 0.8, 0.2),
+    ringOf(outline, 0.93, 0.1),
+    ringOf(outline, 1, 0.018), // girdle, upper edge
+    ringOf(outline, 1, -0.018), // girdle, lower edge
+    ringOf(outline, 0.76, -0.3),
+    ringOf(outline, 0.46, -0.56),
+    ringOf(outline, 0.12, -0.76), // culet
   ];
 
   for (let level = 0; level < tiers.length - 1; level += 1) {
     const upper = tiers[level];
     const lower = tiers[level + 1];
     if (!upper || !lower) continue;
-    for (let i = 0; i < 8; i += 1) {
+    for (let i = 0; i < count; i += 1) {
       const a = upper[i];
-      const b = upper[(i + 1) % 8];
-      const c = lower[(i + 1) % 8];
+      const b = upper[(i + 1) % count];
+      const c = lower[(i + 1) % count];
       const d = lower[i];
       if (a && b && c && d) quad(a, b, c, d);
     }
   }
 
-  const cap = (outline: Vector3[] | undefined) => {
-    const first = outline?.[0];
-    if (!outline || !first) return;
-    for (let i = 1; i < 7; i += 1) {
-      const b = outline[i];
-      const c = outline[i + 1];
+  const cap = (ringPoints: Vector3[] | undefined) => {
+    const first = ringPoints?.[0];
+    if (!ringPoints || !first) return;
+    for (let i = 1; i < count - 1; i += 1) {
+      const b = ringPoints[i];
+      const c = ringPoints[i + 1];
       if (b && c) triangle(first, b, c);
     }
   };
@@ -154,4 +201,72 @@ export function createStepCutGeometry(halfWidth: number, halfLength: number, cor
   cap(tiers[tiers.length - 1]);
 
   return build();
+}
+
+/**
+ * Brilliant-style cut for a fancy outline (heart, marquise, hexagon): triangular facets
+ * between table, girdle and a pointed culet. The outline may be concave, as a heart is, as
+ * long as every point is visible from `centreZ`; facets are therefore oriented by which
+ * part of the stone they belong to, not by a shared centre.
+ */
+export function createFancyBrilliantGeometry(outline: Outline, centreZ = 0): BufferGeometry {
+  const positions: number[] = [];
+  const edgeA = new Vector3();
+  const edgeB = new Vector3();
+  const normal = new Vector3();
+  const middle = new Vector3();
+
+  /** Adds a triangle wound so that its normal satisfies `facesOut`. */
+  const triangle = (a: Vector3, b: Vector3, c: Vector3, facesOut: (n: Vector3, m: Vector3) => boolean) => {
+    normal.crossVectors(edgeA.subVectors(b, a), edgeB.subVectors(c, a));
+    middle.copy(a).add(b).add(c).divideScalar(3);
+    const ordered = facesOut(normal, middle) ? [a, b, c] : [a, c, b];
+    for (const point of ordered) positions.push(point.x, point.y, point.z);
+  };
+  const up = (n: Vector3) => n.y >= 0;
+  const down = (n: Vector3) => n.y <= 0;
+  const sideways = (n: Vector3, m: Vector3) => n.x * m.x + n.z * (m.z - centreZ) >= 0;
+
+  const count = outline.length;
+  const table = ringOf(outline, 0.56, 0.3, centreZ);
+  const crown = ringOf(outline, 0.82, 0.17, centreZ);
+  const upper = ringOf(outline, 1, 0.018, centreZ);
+  const lower = ringOf(outline, 1, -0.018, centreZ);
+  const pavilion = ringOf(outline, 0.5, -0.44, centreZ);
+  const tableCentre = new Vector3(0, 0.3, centreZ);
+  const culet = new Vector3(0, -0.84, centreZ);
+
+  for (let i = 0; i < count; i += 1) {
+    const j = (i + 1) % count;
+    const [t0, t1, c0, c1] = [table[i], table[j], crown[i], crown[j]];
+    const [u0, u1, l0, l1] = [upper[i], upper[j], lower[i], lower[j]];
+    const [p0, p1] = [pavilion[i], pavilion[j]];
+    if (!t0 || !t1 || !c0 || !c1 || !u0 || !u1 || !l0 || !l1 || !p0 || !p1) continue;
+
+    triangle(tableCentre, t0, t1, up);
+    // Alternate the diagonal so neighbouring crown facets mirror each other.
+    if (i % 2 === 0) {
+      triangle(t0, t1, c0, up);
+      triangle(t1, c1, c0, up);
+      triangle(c0, c1, u0, up);
+      triangle(c1, u1, u0, up);
+    } else {
+      triangle(t0, t1, c1, up);
+      triangle(t0, c1, c0, up);
+      triangle(c0, c1, u1, up);
+      triangle(c0, u1, u0, up);
+    }
+
+    triangle(u0, u1, l1, sideways);
+    triangle(u0, l1, l0, sideways);
+
+    triangle(l0, l1, p0, down);
+    triangle(l1, p1, p0, down);
+    triangle(p0, p1, culet, down);
+  }
+
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
+  geometry.computeVertexNormals();
+  return geometry;
 }

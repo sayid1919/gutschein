@@ -64,7 +64,6 @@ export function Hero() {
         </div>
       </div>
 
-      <div aria-hidden="true" className="hairline" />
     </section>
   );
 }

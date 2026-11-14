@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import {
   BackSide,
   BoxGeometry,
+  CanvasTexture,
   Color,
   CubeCamera,
   type CubeTexture,
   HalfFloatType,
   Mesh,
   MeshBasicMaterial,
+  PlaneGeometry,
   Scene,
   SphereGeometry,
   WebGLCubeRenderTarget,
@@ -36,18 +38,36 @@ export function useStudioEnvironment(): CubeTexture | null {
     const studio = new Scene();
     const disposables: { dispose: () => void }[] = [target];
 
-    const add = (
-      geometry: BoxGeometry | SphereGeometry,
+    // Soft-edged glow used for every light, so facets pick up gradients instead of hard patches.
+    const glowCanvas = document.createElement("canvas");
+    glowCanvas.width = glowCanvas.height = 128;
+    const context = glowCanvas.getContext("2d");
+    if (context) {
+      const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gradient.addColorStop(0, "rgba(255,255,255,1)");
+      gradient.addColorStop(0.45, "rgba(255,255,255,0.85)");
+      gradient.addColorStop(1, "rgba(255,255,255,0)");
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, 128, 128);
+    }
+    const glow = new CanvasTexture(glowCanvas);
+    disposables.push(glow);
+
+    const addLight = (
+      width: number,
+      height: number,
       color: string,
       intensity: number,
       position: [number, number, number],
-      inside = false,
     ) => {
+      const geometry = new PlaneGeometry(width, height);
       const material = new MeshBasicMaterial({
         color: new Color(color).multiplyScalar(intensity),
+        map: glow,
+        transparent: true,
+        depthWrite: false,
         toneMapped: false,
       });
-      if (inside) material.side = BackSide;
       const mesh = new Mesh(geometry, material);
       mesh.position.set(...position);
       mesh.lookAt(0, 0, 0);
@@ -55,10 +75,13 @@ export function useStudioEnvironment(): CubeTexture | null {
       disposables.push(geometry, material);
     };
 
-    // Neutral grey room, so each stone's own colour decides how it looks.
-    add(new SphereGeometry(40, 32, 16), "#5a5f5c", 1, [0, 0, 0], true);
+    // The room: a neutral dark grey, so each stone's own colour decides how it looks.
+    const roomGeometry = new SphereGeometry(40, 32, 16);
+    const roomMaterial = new MeshBasicMaterial({ color: "#3b403d", side: BackSide, toneMapped: false });
+    studio.add(new Mesh(roomGeometry, roomMaterial));
+    disposables.push(roomGeometry, roomMaterial);
 
-    const random = seeded(7);
+    const random = seeded(11);
     const onSphere = (distance: number): [number, number, number] => {
       const theta = random() * Math.PI * 2;
       const phi = Math.acos(2 * random() - 1);
@@ -69,29 +92,28 @@ export function useStudioEnvironment(): CubeTexture | null {
       ];
     };
 
-    // Softboxes: large, moderately bright panels that give a stone its body colour
-    for (let i = 0; i < 26; i += 1) {
-      const width = 5 + random() * 7;
-      const height = 5 + random() * 7;
-      add(new BoxGeometry(width, height, 0.2), "#ffffff", 1.6 + random() * 2.4, onSphere(20));
+    // Dark flags first (furthest out): contrast between neighbouring facets is what reads as "gem".
+    for (let i = 0; i < 10; i += 1) {
+      const size = 9 + random() * 8;
+      const geometry = new BoxGeometry(size, size, 0.2);
+      const material = new MeshBasicMaterial({ color: "#060807", toneMapped: false });
+      const mesh = new Mesh(geometry, material);
+      mesh.position.set(...onSphere(24));
+      mesh.lookAt(0, 0, 0);
+      studio.add(mesh);
+      disposables.push(geometry, material);
     }
 
-    // Dark flags: without contrast between neighbouring facets a gem looks like glass
-    for (let i = 0; i < 14; i += 1) {
-      const size = 5 + random() * 6;
-      add(new BoxGeometry(size, size, 0.2), "#020503", 1, onSphere(17));
+    // Softboxes: large, gentle lights that give a stone its body colour
+    for (let i = 0; i < 22; i += 1) {
+      addLight(9 + random() * 10, 9 + random() * 10, "#ffffff", 1.5 + random() * 2, onSphere(20));
     }
 
     // Pin lights: small and very bright, they become the flashes of fire
-    const pinTints = ["#ffffff", "#fff3c4", "#ffd9a0", "#e8f1ff", "#cfe8ff"];
-    for (let i = 0; i < 80; i += 1) {
-      const size = 0.4 + random() * 1.2;
-      add(
-        new BoxGeometry(size, size, 0.1),
-        pinTints[Math.floor(random() * pinTints.length)] ?? "#ffffff",
-        8 + random() * 14,
-        onSphere(14),
-      );
+    const pinTints = ["#ffffff", "#fff3c4", "#ffe0b0", "#e8f1ff"];
+    for (let i = 0; i < 60; i += 1) {
+      const size = 1 + random() * 1.8;
+      addLight(size, size, pinTints[Math.floor(random() * pinTints.length)] ?? "#ffffff", 7 + random() * 12, onSphere(14));
     }
 
     const camera = new CubeCamera(0.1, 100, target);

@@ -1,8 +1,8 @@
 import { Collections } from "@/components/collections";
 import { DemantoidFeature } from "@/components/demantoid-feature";
-import { GemJourney } from "@/components/gem-journey";
-import { GemSlots } from "@/components/gem-slots";
+import { GemShowcase } from "@/components/gem-showcase";
 import { Hero } from "@/components/hero";
+import { Marquee } from "@/components/marquee";
 import { Philosophy } from "@/components/philosophy";
 import { Promise as PromiseSection } from "@/components/promise";
 import { SiteFooter } from "@/components/site-footer";
@@ -50,14 +50,14 @@ export default function HomePage() {
       <SiteHeader />
       <main id="main">
         <Hero />
-        <GemSlots />
+        <Marquee />
+        <GemShowcase />
         <Collections />
         <Philosophy />
         <PromiseSection />
         <DemantoidFeature />
       </main>
       <SiteFooter />
-      <GemJourney />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

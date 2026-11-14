@@ -13,7 +13,7 @@ const base =
   "group inline-flex min-h-12 items-center justify-center gap-3 px-7 py-3 text-xs font-normal uppercase tracking-[0.24em] transition-colors duration-500 ease-luxe";
 
 const variants = {
-  solid: "bg-ivory text-ink hover:bg-gold-soft",
+  solid: "btn-shine bg-ivory text-ink hover:bg-gold-soft",
   outline: "border border-gold/50 text-ivory hover:border-gold-soft hover:bg-gold/10",
 } as const;
 
