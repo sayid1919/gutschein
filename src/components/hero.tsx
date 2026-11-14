@@ -1,6 +1,5 @@
 import { ButtonLink } from "@/components/button-link";
 import { Gem } from "@/components/gem";
-import { GemStage } from "@/components/gem-stage";
 import { Reveal } from "@/components/reveal";
 import { site } from "@/lib/site";
 
@@ -16,7 +15,7 @@ export function Hero() {
         className="absolute inset-0 -z-10 bg-[radial-gradient(60rem_40rem_at_78%_38%,rgb(18_64_43/0.75),transparent_70%),radial-gradient(40rem_30rem_at_0%_100%,rgb(203_171_108/0.08),transparent_70%)]"
       />
 
-      <div className="container-page grid items-center gap-14 py-16 sm:py-20 lg:min-h-[calc(100svh-5rem)] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-10 lg:py-24">
+      <div className="container-page grid items-center gap-10 py-10 sm:gap-14 sm:py-16 lg:min-h-[calc(100svh-5rem)] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-10 lg:py-24">
         <div className="max-w-2xl">
           <Reveal>
             <p className="eyebrow">{site.tagline}</p>
@@ -54,16 +53,15 @@ export function Hero() {
           </Reveal>
         </div>
 
-        <Reveal delay={0.2} offset={0} className="relative mx-auto w-full max-w-[21rem] sm:max-w-md lg:max-w-[34rem]">
-          <div
-            aria-hidden="true"
-            className="absolute inset-[4%] animate-glow-breathe rounded-full bg-[radial-gradient(closest-side,rgb(111_210_122/0.32),transparent)] blur-2xl"
-          />
-          <GemStage fallback={<Gem animated={false} className="size-full" />} />
-          <p className="mt-2 text-center text-[0.6875rem] uppercase tracking-[0.28em] text-mist">
-            Drag to turn the stone
-          </p>
-        </Reveal>
+        {/* The 3D stones are drawn over this area by <GemJourney>; the drawing is their fallback. */}
+        <div
+          data-gem-stage
+          aria-hidden="true"
+          className="relative order-first mx-auto aspect-square w-full max-w-[16rem] sm:max-w-sm lg:order-none lg:max-w-[34rem]"
+        >
+          <div className="absolute inset-[6%] animate-glow-breathe rounded-full bg-[radial-gradient(closest-side,rgb(111_210_122/0.26),transparent)] blur-2xl" />
+          <Gem animated={false} className="gem-fallback absolute inset-[20%] size-[60%]" />
+        </div>
       </div>
 
       <div aria-hidden="true" className="hairline" />

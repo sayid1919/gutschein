@@ -128,3 +128,13 @@
     transparent
   );
 }
+
+/* Static gem artwork gives way to the 3D stones once <GemJourney> is running. */
+.gem-fallback {
+  transition: opacity 1s var(--ease-luxe);
+}
+
+:root[data-gems] [data-gem-slot] .gem-fallback,
+:root[data-gems="flying"] [data-gem-stage] .gem-fallback {
+  opacity: 0;
+}

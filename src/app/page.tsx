@@ -1,5 +1,7 @@
 import { Collections } from "@/components/collections";
 import { DemantoidFeature } from "@/components/demantoid-feature";
+import { GemJourney } from "@/components/gem-journey";
+import { GemSlots } from "@/components/gem-slots";
 import { Hero } from "@/components/hero";
 import { Philosophy } from "@/components/philosophy";
 import { Promise as PromiseSection } from "@/components/promise";
@@ -48,12 +50,14 @@ export default function HomePage() {
       <SiteHeader />
       <main id="main">
         <Hero />
+        <GemSlots />
         <Collections />
         <Philosophy />
         <PromiseSection />
         <DemantoidFeature />
       </main>
       <SiteFooter />
+      <GemJourney />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
