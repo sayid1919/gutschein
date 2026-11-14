@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { formatPrice, getCategory, type Product, productPath } from "@/lib/shop";
+import { getCategory, priceLabel, type Product, productPath } from "@/lib/shop";
 
 export function ProductCard({ product }: { product: Product }) {
   const [cover] = product.images;
@@ -33,8 +33,12 @@ export function ProductCard({ product }: { product: Product }) {
           </Link>
         </h3>
         {product.specs?.weight ? <p className="mt-1 text-sm text-mist">{product.specs.weight}</p> : null}
-        <p className="mt-auto pt-5 text-base font-normal tabular-nums text-ivory">
-          {product.sold ? <span className="text-mist">Sold</span> : formatPrice(product.price)}
+        <p
+          className={`mt-auto pt-5 text-base font-normal tabular-nums ${
+            product.sold || product.price === undefined ? "text-mist" : "text-ivory"
+          }`}
+        >
+          {priceLabel(product)}
         </p>
       </div>
     </article>

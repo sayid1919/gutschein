@@ -25,7 +25,8 @@ Set `NEXT_PUBLIC_SITE_URL` to the public origin of the deployed site (see `.env.
 
 ## Shop
 
-- **Inventory** lives in `src/lib/products.ts`; the file explains how to list a stone. Photos and videos go in `public/products/<slug>/`.
+- **Inventory** lives in `src/lib/products.ts`; the file explains how to set a price, mark a piece sold and list a new one. Photos and videos go in `public/products/<slug>/`.
+- **Prices** are written in Swiss francs (`price: 1250` is CHF 1,250.00). A piece without a price shows "Price on request" and cannot be bought.
 - **Categories, currency (CHF) and shipping countries** are set in `src/lib/shop.ts`.
 - **Payments** use Stripe Checkout. Set `STRIPE_SECRET_KEY` to switch them on; without it the shop works as a catalogue and checkout reports that online payment is off.
 - Prices are always read from the server's catalogue, never from the browser.

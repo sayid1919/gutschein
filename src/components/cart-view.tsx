@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/components/cart-provider";
 import { products } from "@/lib/products";
-import { formatPrice, productPath } from "@/lib/shop";
+import { formatPrice, isPurchasable, priceLabel, productPath } from "@/lib/shop";
 
 export function CartView() {
   const { items, ready, remove } = useCart();
@@ -17,8 +17,8 @@ export function CartView() {
   }
 
   const lines = items.flatMap((slug) => products.filter((product) => product.slug === slug));
-  const available = lines.filter((product) => !product.sold);
-  const total = available.reduce((sum, product) => sum + product.price, 0);
+  const available = lines.filter(isPurchasable);
+  const total = available.reduce((sum, product) => sum + (product.price ?? 0), 0);
 
   if (lines.length === 0) {
     return (
@@ -71,12 +71,9 @@ export function CartView() {
                   </Link>
                 </h2>
                 {product.specs?.weight ? <p className="mt-1 text-sm text-mist">{product.specs.weight}</p> : null}
-                <p className="mt-2 tabular-nums text-ivory">
-                  {product.sold ? (
-                    <span className="text-mist">Sold — no longer available</span>
-                  ) : (
-                    formatPrice(product.price)
-                  )}
+                <p className={`mt-2 tabular-nums ${isPurchasable(product) ? "text-ivory" : "text-mist"}`}>
+                  {priceLabel(product)}
+                  {isPurchasable(product) ? null : " — cannot be ordered online"}
                 </p>
                 <button
                   type="button"

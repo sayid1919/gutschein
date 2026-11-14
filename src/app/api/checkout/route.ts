@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getProduct } from "@/lib/products";
-import { productPath, shop } from "@/lib/shop";
+import { isPurchasable, productPath, shop } from "@/lib/shop";
 import { siteUrl } from "@/lib/site";
 import { getStripe } from "@/lib/stripe";
 
@@ -40,9 +40,9 @@ export async function POST(request: Request) {
     return fail(400, "An item in your cart is no longer listed. Please remove it and try again.");
   }
   const products = items.filter((product) => product !== undefined);
-  const sold = products.find((product) => product.sold);
-  if (sold) {
-    return fail(409, `${sold.name} has been sold. Please remove it from your cart.`);
+  const unavailable = products.find((product) => !isPurchasable(product));
+  if (unavailable) {
+    return fail(409, `${unavailable.name} cannot be ordered online. Please remove it from your cart.`);
   }
 
   const origin = request.headers.get("origin") ?? siteUrl;
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         quantity: 1,
         price_data: {
           currency: shop.currency,
-          unit_amount: product.price,
+          unit_amount: Math.round((product.price ?? 0) * 100),
           product_data: {
             name: product.name,
             images: [`${siteUrl}${product.images[0].src}`],

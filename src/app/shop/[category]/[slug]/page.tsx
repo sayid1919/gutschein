@@ -6,7 +6,15 @@ import { AddToCartButton } from "@/components/add-to-cart-button";
 import { LoopVideo } from "@/components/loop-video";
 import { PageShell } from "@/components/page-shell";
 import { getProduct, products } from "@/lib/products";
-import { formatPrice, getCategory, productPath, shop, type SpecKey, specLabels } from "@/lib/shop";
+import {
+  getCategory,
+  isPurchasable,
+  priceLabel,
+  productPath,
+  shop,
+  type SpecKey,
+  specLabels,
+} from "@/lib/shop";
 import { siteUrl } from "@/lib/site";
 
 interface ProductPageProps {
@@ -30,7 +38,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   if (!product) return {};
   return {
     title: product.name,
-    description: product.description,
+    description: product.description ?? `${product.name} at Virelia Gemhouse.`,
     alternates: { canonical: productPath(product) },
     openGraph: { images: product.images.map((image) => ({ url: image.src, alt: image.alt })) },
   };
@@ -53,13 +61,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
     description: product.description,
     image: product.images.map((image) => `${siteUrl}${image.src}`),
     category: category?.name,
-    offers: {
-      "@type": "Offer",
-      url: `${siteUrl}${productPath(product)}`,
-      price: (product.price / 100).toFixed(2),
-      priceCurrency: shop.currency.toUpperCase(),
-      availability: product.sold ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
-    },
+    ...(product.price === undefined
+      ? {}
+      : {
+          offers: {
+            "@type": "Offer",
+            url: `${siteUrl}${productPath(product)}`,
+            price: product.price.toFixed(2),
+            priceCurrency: shop.currency.toUpperCase(),
+            availability: product.sold ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+          },
+        }),
   };
 
   return (
@@ -122,18 +134,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <h1 className="mt-4 text-balance font-display text-4xl font-medium leading-[1.08] text-ivory sm:text-5xl">
             {product.name}
           </h1>
-          <p className="mt-6 text-2xl tabular-nums text-ivory">
-            {product.sold ? <span className="text-mist">Sold</span> : formatPrice(product.price)}
+          <p
+            className={`mt-6 text-2xl tabular-nums ${isPurchasable(product) ? "text-ivory" : "text-mist"}`}
+          >
+            {priceLabel(product)}
           </p>
-          <p className="mt-6 max-w-prose leading-relaxed text-ivory/85">{product.description}</p>
+          {product.description ? (
+            <p className="mt-6 max-w-prose leading-relaxed text-ivory/85">{product.description}</p>
+          ) : null}
 
           <div className="mt-8">
             {product.sold ? (
               <p className="border border-line px-5 py-4 text-sm text-mist">
                 This piece has been sold and is shown for reference.
               </p>
-            ) : (
+            ) : isPurchasable(product) ? (
               <AddToCartButton slug={product.slug} name={product.name} />
+            ) : (
+              <p className="border border-line px-5 py-4 text-sm text-mist">
+                The price of this piece has not been published yet, so it cannot be ordered online.
+              </p>
             )}
           </div>
 

@@ -53,9 +53,13 @@ export interface Product {
   slug: string;
   category: CategoryId;
   name: string;
-  description: string;
-  /** Price in the smallest currency unit (rappen for CHF): CHF 1,250.00 is 125000. */
-  price: number;
+  description?: string;
+  /**
+   * Price in Swiss francs, written as a plain number: 1250 means CHF 1,250.00.
+   * Leave it out while the price is undecided; the piece is then shown as
+   * "Price on request" and cannot be bought online.
+   */
+  price?: number;
   /** Every stone is one of a kind. Set this as soon as it is sold. */
   sold?: boolean;
   /** At least one photograph; the first is used on listing cards. */
@@ -83,8 +87,19 @@ const priceFormat = new Intl.NumberFormat(shop.locale, {
   currency: shop.currency.toUpperCase(),
 });
 
-export function formatPrice(minorUnits: number): string {
-  return priceFormat.format(minorUnits / 100);
+export function formatPrice(amount: number): string {
+  return priceFormat.format(amount);
+}
+
+/** Text shown where a price goes: the price, "Sold", or "Price on request". */
+export function priceLabel(product: Pick<Product, "price" | "sold">): string {
+  if (product.sold) return "Sold";
+  return product.price === undefined ? "Price on request" : formatPrice(product.price);
+}
+
+/** True when the piece can be put in the cart and paid for online. */
+export function isPurchasable(product: Pick<Product, "price" | "sold">): boolean {
+  return !product.sold && product.price !== undefined && product.price > 0;
 }
 
 export function productPath(product: Pick<Product, "category" | "slug">): string {
