@@ -186,6 +186,8 @@ interface GemJourneySceneProps {
 export default function GemJourneyScene({ animate, active, onReady }: GemJourneySceneProps) {
   return (
     <Canvas
+      // The canvas covers the whole viewport, so it must never take clicks from the page below.
+      style={{ pointerEvents: "none" }}
       dpr={[1, 1.6]}
       frameloop={active ? "always" : "never"}
       gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
