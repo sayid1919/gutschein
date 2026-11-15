@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-display: var(--font-cormorant), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-ink: #060a08;
+  --color-ink-soft: #0b130f;
+  --color-surface: #0f1914;
+  --color-line: rgb(255 255 255 / 0.09);
+  --color-ivory: #f4f0e6;
+  --color-mist: #a8b3ab;
+  --color-gold: #cbab6c;
+  --color-gold-soft: #e3cb97;
+  --color-demantoid: #6fd27a;
+  --color-forest: #12402b;
+
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-gem-turn: gem-turn 140s linear infinite;
+  --animate-facet-glint: facet-glint 5.5s ease-in-out infinite;
+  --animate-glow-breathe: glow-breathe 9s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes gem-turn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes facet-glint {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes glow-breathe {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.06);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgb(111 210 122 / 0.3);
+    color: var(--color-ivory);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-soft);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 3rem;
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+@utility hairline {
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgb(203 171 108 / 0.45) 20%,
+    rgb(203 171 108 / 0.45) 80%,
+    transparent
+  );
+}
+
+/* Static gem artwork gives way to the 3D stones once <GemJourney> is running. */
+.gem-fallback {
+  transition: opacity 1s var(--ease-luxe);
+}
+
+:root[data-gems] [data-gem-slot] .gem-fallback,
+:root[data-gems="flying"] [data-gem-stage] .gem-fallback {
+  opacity: 0;
+}
+
+/* Pointer-following light on cards; see <Spotlight>. */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(18rem circle at var(--spot-x, 50%) var(--spot-y, -40%), rgb(203 171 108 / 0.14), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-luxe);
+  pointer-events: none;
+}
+
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* A band of light that sweeps across a button on hover. */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 0.9s var(--ease-luxe);
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  transform: translateX(120%);
+}
+
+/* Details panel: slides in from the side on wide screens, up from the bottom on phones. */
+.gem-dialog[open] {
+  animation: gem-dialog-in 0.5s var(--ease-luxe);
+}
+
+@keyframes gem-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+@media (min-width: 48rem) {
+  @keyframes gem-dialog-in {
+    from {
+      opacity: 0;
+      transform: translateX(2rem);
+    }
+  }
+}
+
+/* Fine film grain over the whole page, so large dark areas do not look flat. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
