@@ -33,6 +33,30 @@ export const products: readonly Product[] = [
     specs: { shape: "Round" },
   },
   {
+    slug: "demantoid-rough-crystals",
+    category: "demantoid-garnet",
+    name: "Demantoid Garnet, Rough Crystals",
+    images: [
+      {
+        src: "/products/demantoid-rough-crystals/1.jpg",
+        alt: "A pile of rough demantoid garnet crystals in green and yellow-green, wet, on dark cloth",
+      },
+      {
+        src: "/products/demantoid-rough-crystals/2.jpg",
+        alt: "Close view of rough demantoid garnet crystals showing their natural faces",
+      },
+      {
+        src: "/products/demantoid-rough-crystals/3.jpg",
+        alt: "Rough demantoid garnet crystals lit from above",
+      },
+    ],
+    video: {
+      src: "/products/demantoid-rough-crystals/video.mp4",
+      poster: "/products/demantoid-rough-crystals/poster.jpg",
+    },
+    specs: { shape: "Rough, natural crystals", colour: "Green to yellow-green" },
+  },
+  {
     slug: "blue-square-step-cut",
     category: "other-gemstones",
     name: "Blue Gemstone, Square Step Cut",

@@ -49,7 +49,7 @@ export const collections: readonly Collection[] = [
     name: "Rough Gemstones",
     summary: "Natural crystals, presented just as the earth shaped them.",
     glyph: "rough",
-    href: "/shop",
+    href: "/shop/demantoid-garnet",
   },
   {
     id: "faceted-gemstones",

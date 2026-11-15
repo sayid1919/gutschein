@@ -20,7 +20,7 @@ export const collectionPhotos: Partial<Record<string, Photo>> = {
   },
   "rough-gemstones": {
     src: rough,
-    alt: "Rough green garnet crystals on their host rock",
+    alt: "A pile of rough demantoid garnet crystals in green and yellow-green",
   },
   "faceted-gemstones": {
     src: faceted,
